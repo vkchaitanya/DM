@@ -123,11 +123,11 @@ public class Apriori {
             }
         }
 		
-		System.out.println("Candidate Itemsets");
+        System.out.println("Candidate Itemsets");
 		for (int i = 0; i < itemsets.size(); i++) {
 			System.out.println(Arrays.toString(itemsets.get(i)) + " (" +  ((count[i] / (double) totalTransactions))+" "+count[i]+")");
-        }
-        
+        }        
+		
 		System.out.println("Frequent Itemsets");
         for (int i = 0; i < itemsets.size(); i++) {
         	if ((count[i] / (double) (totalTransactions)) >= minSupport) {
@@ -153,38 +153,38 @@ public class Apriori {
 	private void generateNewItemsets(){
 		int currentSizeOfItemsets = itemsets.get(0).length;
 		HashMap<String, int[]> tempCandidates = new HashMap<String, int[]>(); 
-	        for(int i=0; i<itemsets.size(); i++) {
-	            for(int j=i+1; j<itemsets.size(); j++) {
-	                int[] X = itemsets.get(i);
-	                int[] Y = itemsets.get(j);
-	                assert (X.length==Y.length);
-	                int [] newCand = new int[currentSizeOfItemsets+1];
-	                for(int s=0; s<newCand.length-1; s++) {
-	                        newCand[s] = X[s];
-	                }
-	                int ndifferent = 0;
-	                for(int s1=0; s1<Y.length; s1++) {
-	                        boolean found = false;
-	                        // is Y[s1] in X?
-	                    for(int s2=0; s2<X.length; s2++) {
-	                        if (X[s2]==Y[s1]) { 
-								found = true;
-	                            break;
-	                        }
-	                    }
-						if (!found){ // Y[s1] is not in X
-							ndifferent++;
-							// we put the missing value at the end of newCand
-							newCand[newCand.length -1] = Y[s1];
-						}
-	                }
-	                assert(ndifferent>0);	                
-	                if (ndifferent==1) {
-	                    Arrays.sort(newCand);
-	                    tempCandidates.put(Arrays.toString(newCand),newCand);
-	                }
-	            }
-	        }	        
-	        itemsets = new ArrayList<int[]>(tempCandidates.values());
+        for(int i=0; i<itemsets.size(); i++) {
+            for(int j=i+1; j<itemsets.size(); j++) {
+                int[] X = itemsets.get(i);
+                int[] Y = itemsets.get(j);
+                assert (X.length==Y.length);
+                int [] newCand = new int[currentSizeOfItemsets+1];
+                for(int s=0; s<newCand.length-1; s++) {
+                        newCand[s] = X[s];
+            }
+            int ndifferent = 0;
+            for(int s1=0; s1<Y.length; s1++) {
+                    boolean found = false;
+                    // is Y[s1] in X?
+                for(int s2=0; s2<X.length; s2++) {
+                    if (X[s2]==Y[s1]) { 
+						found = true;
+                        break;
+                    }
+                }
+				if (!found){ // Y[s1] is not in X
+					ndifferent++;
+					// we put the missing value at the end of newCand
+					newCand[newCand.length -1] = Y[s1];
+				}
+            }
+            assert(ndifferent>0);	                
+            if (ndifferent==1) {
+                Arrays.sort(newCand);
+                tempCandidates.put(Arrays.toString(newCand),newCand);
+            }
+            }
+        }	        
+        itemsets = new ArrayList<int[]>(tempCandidates.values());
 	}
 }
