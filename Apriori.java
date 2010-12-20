@@ -24,8 +24,8 @@ public class Apriori {
 	double minSupport;
 	int itemsetNumber=0;
 	ArrayList<int[]> itemsets = null;
-	String configFile = "config.txt";
-	String transactionFile = "transaction.txt";
+	String configFile = "C:\\config.txt";
+	String transactionFile = "C:\\transaction.txt";
 		
 	public Apriori() throws NumberFormatException, IOException {
 		config();
@@ -103,24 +103,24 @@ public class Apriori {
         for (int i = 0; i < totalTransactions; i++) {
             String row = reader.readLine();
             getDataSet(row, transactions);
-            for (int c = 0; c < itemsets.size(); c++) {
+            for (int j = 0; j < itemsets.size(); j++) {
 	            found = true;
-	            int[] cand = itemsets.get(c);
-	            for (int xx : cand) {
-	                if (transactions[xx] == false) {
+	            int[] candidate = itemsets.get(j);
+	            for (int item : candidate) {
+	                if (transactions[item] == false) {
 	                	found = false;
 	                    break;
 	                }
 	            }
 	            if (found) {
-                    count[c]++;
+                    count[j]++;
 	            }
             }
         }
         
         for (int i = 0; i < itemsets.size(); i++) {
         	if ((count[i] / (double) (totalTransactions)) >= minSupport) {
-        		foundFrequentItemSet(itemsets.get(i), count[i]);
+        		System.out.println(Arrays.toString(itemsets.get(i)) + " (" +  ((count[i] / (double) totalTransactions))+" "+count[i]+")");
         		frequentItems.add(itemsets.get(i));
         	}
         }
@@ -139,9 +139,6 @@ public class Apriori {
 		}
 	}
 	
-	private void foundFrequentItemSet(int[] itemset, int support) {
-        System.out.println(Arrays.toString(itemset) + "  ("+ ((support / (double) totalTransactions))+" "+support+")");
-    }
 	private void generateNewItemsets(){
 		int currentSizeOfItemsets = itemsets.get(0).length;
 		HashMap<String, int[]> tempCandidates = new HashMap<String, int[]>(); 
@@ -175,6 +172,8 @@ public class Apriori {
 						}
 	                }
 	                assert(ndifferent>0);
+	                
+	                
 	                if (ndifferent==1) {
 	                    Arrays.sort(newCand);
 	                    tempCandidates.put(Arrays.toString(newCand),newCand);
