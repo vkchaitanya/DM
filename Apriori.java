@@ -5,27 +5,31 @@ import java.util.*;
  * 
  * @author chaitu
  * Implement Apriori Algorithm for finding frequent itemsets
- * using candidate generation.
  * 
- * @input: config.txt
+ * @input config.txt
  * 		Contents of config.txt
  * 			- Number of items
  * 			- Number of transactions
  * 			- Min support (Given in decimal, by default 0.6(60%))
  * @input: transactions.txt
+ * 
+ * References: 
+ * 1. http://www2.cs.uregina.ca/~dbd/cs831/notes/itemsets/itemset_prog1.html
+ * 2. http://allmybrain.com/2007/11/12/implementing-the-apriori-data-mining-algorithm-with-javascript/
+ * 3. http://www.codeproject.com/KB/recipes/AprioriAlgorithm.aspx
  */
 public class Apriori {
 
 	/*
-	 * Input variable declarations
+	 * @param Input variable declarations
 	 */
 	int numItems;
 	int totalTransactions;
 	double minSupport;
 	int itemsetNumber=0;
 	ArrayList<int[]> itemsets = null;
-	String configFile = "C:\\config.txt";
-	String transactionFile = "C:\\transaction.txt";
+	String configFile = "config.txt";
+	String transactionFile = "testtransaction.txt";
 		
 	public Apriori() throws NumberFormatException, IOException {
 		config();
@@ -72,6 +76,7 @@ public class Apriori {
 	 * @return: Values to the output file
 	 * @throws IOException 
 	 * @throws FileNotFoundException 
+	 * This function implements the Apriori algorithm. 
 	 */
 	private void compute() throws FileNotFoundException, IOException{
 		createItemsets();
@@ -109,7 +114,7 @@ public class Apriori {
 	            for (int item : candidate) {
 	                if (transactions[item] == false) {
 	                	found = false;
-	                    break;
+	                	break;
 	                }
 	            }
 	            if (found) {
@@ -117,7 +122,13 @@ public class Apriori {
 	            }
             }
         }
+		
+		System.out.println("Candidate Itemsets");
+		for (int i = 0; i < itemsets.size(); i++) {
+			System.out.println(Arrays.toString(itemsets.get(i)) + " (" +  ((count[i] / (double) totalTransactions))+" "+count[i]+")");
+        }
         
+		System.out.println("Frequent Itemsets");
         for (int i = 0; i < itemsets.size(); i++) {
         	if ((count[i] / (double) (totalTransactions)) >= minSupport) {
         		System.out.println(Arrays.toString(itemsets.get(i)) + " (" +  ((count[i] / (double) totalTransactions))+" "+count[i]+")");
@@ -130,7 +141,7 @@ public class Apriori {
 	private void getDataSet(String row, boolean[] transactions){
 		Arrays.fill(transactions, false);
 		int j=0;
-		StringTokenizer tokens = new StringTokenizer(row, " ");
+		StringTokenizer tokens = new StringTokenizer(row, "\t");
 		while(tokens.hasMoreElements()){
 			int val = Integer.parseInt(tokens.nextElement().toString());
 			if(val == 1)
@@ -146,15 +157,11 @@ public class Apriori {
 	            for(int j=i+1; j<itemsets.size(); j++) {
 	                int[] X = itemsets.get(i);
 	                int[] Y = itemsets.get(j);
-
 	                assert (X.length==Y.length);
-	                
-	                //make a string of the first n-2 tokens of the strings
 	                int [] newCand = new int[currentSizeOfItemsets+1];
 	                for(int s=0; s<newCand.length-1; s++) {
 	                        newCand[s] = X[s];
 	                }
-	                    
 	                int ndifferent = 0;
 	                for(int s1=0; s1<Y.length; s1++) {
 	                        boolean found = false;
@@ -171,9 +178,7 @@ public class Apriori {
 							newCand[newCand.length -1] = Y[s1];
 						}
 	                }
-	                assert(ndifferent>0);
-	                
-	                
+	                assert(ndifferent>0);	                
 	                if (ndifferent==1) {
 	                    Arrays.sort(newCand);
 	                    tempCandidates.put(Arrays.toString(newCand),newCand);
